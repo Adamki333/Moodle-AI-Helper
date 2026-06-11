@@ -22,8 +22,19 @@
     .form-group { display: flex; flex-direction: column; gap: 5px; }
     .form-section { font-size: 11px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: .05em; margin: 14px 0 6px; padding-bottom: 4px; border-bottom: 1px solid #f0f0f0; grid-column: 1 / -1; }
     label { font-size: 12px; font-weight: 600; color: #555; }
-    input, select, textarea { padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; width: 100%; -webkit-appearance: none; }
-    input:focus, select:focus, textarea:focus { border-color: #2f80ed; outline: none; }
+    input:not([type="checkbox"]):not([type="radio"]), select, textarea { padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; width: 100%; -webkit-appearance: none; appearance: none; }
+    input:not([type="checkbox"]):not([type="radio"]):focus, select:focus, textarea:focus { border-color: #2f80ed; outline: none; }
+
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #f7f8fa; border: 1px solid #eee; border-radius: 10px; padding: 12px 14px; grid-column: 1 / -1; cursor: pointer; }
+    .toggle-row-label { display: flex; flex-direction: column; gap: 2px; }
+    .toggle-row-label span { font-size: 14px; font-weight: 600; color: #222; }
+    .toggle-row-label small { font-size: 12px; color: #999; }
+    .toggle { position: relative; width: 50px; height: 28px; flex-shrink: 0; }
+    .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .toggle-track { position: absolute; inset: 0; background: #ddd; border-radius: 14px; transition: background .2s; }
+    .toggle input:checked ~ .toggle-track { background: #27ae60; }
+    .toggle-thumb { position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; background: #fff; border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,.25); transition: left .2s; pointer-events: none; }
+    .toggle input:checked ~ .toggle-thumb { left: 25px; }
     textarea { resize: vertical; min-height: 72px; }
 
     .key-row { display: flex; gap: 8px; align-items: center; }
@@ -210,13 +221,17 @@
           <label>Zapytania (tydzień)</label>
           <input type="number" id="new-limit-weekly" value="160" min="1">
         </div>
-        <div class="form-group" style="grid-column: 1 / -1;">
-          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;">
-            <input type="checkbox" id="new-unlimited" style="width:20px;height:20px;cursor:pointer;flex-shrink:0;">
-            Bez limitu zapytań (∞)
-          </label>
-          <div style="font-size:12px;color:#888;margin-top:4px;">Gdy zaznaczone, limity 4h/tygodniowe są ignorowane</div>
-        </div>
+        <label class="toggle-row" for="new-unlimited">
+          <div class="toggle-row-label">
+            <span>Bez limitu zapytań (∞)</span>
+            <small>Limity 4h/tygodniowe będą ignorowane</small>
+          </div>
+          <div class="toggle">
+            <input type="checkbox" id="new-unlimited">
+            <div class="toggle-track"></div>
+            <div class="toggle-thumb"></div>
+          </div>
+        </label>
 
         <div class="form-section">Dane klienta (opcjonalne)</div>
         <div class="form-group">
@@ -329,13 +344,17 @@
           <label>Zapytania (tydzień)</label>
           <input type="number" id="edit-limit-weekly" min="1">
         </div>
-        <div class="form-group" style="grid-column: 1 / -1;">
-          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;">
-            <input type="checkbox" id="edit-unlimited" style="width:20px;height:20px;cursor:pointer;flex-shrink:0;">
-            Bez limitu zapytań (∞)
-          </label>
-          <div style="font-size:12px;color:#888;margin-top:4px;">Gdy zaznaczone, limity 4h/tygodniowe są ignorowane</div>
-        </div>
+        <label class="toggle-row" for="edit-unlimited">
+          <div class="toggle-row-label">
+            <span>Bez limitu zapytań (∞)</span>
+            <small>Limity 4h/tygodniowe będą ignorowane</small>
+          </div>
+          <div class="toggle">
+            <input type="checkbox" id="edit-unlimited">
+            <div class="toggle-track"></div>
+            <div class="toggle-thumb"></div>
+          </div>
+        </label>
 
         <div class="form-section" style="margin-top:20px;">Zarządzanie</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;grid-column:1/-1;">
