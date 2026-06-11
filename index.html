@@ -51,9 +51,8 @@
     tr:hover td { background: #fafcff; }
     tr:last-child td { border-bottom: none; }
 
-    .key-cell { font-family: monospace; font-size: 12px; color: #444; display: flex; align-items: center; gap: 6px; }
-    .copy-btn { background: none; border: none; cursor: pointer; color: #aaa; padding: 4px 6px; border-radius: 4px; font-size: 14px; min-width: 32px; min-height: 32px; display: inline-flex; align-items: center; justify-content: center; }
-    .copy-btn:active { color: #2f80ed; background: #eef4ff; }
+    .key-cell { font-family: monospace; font-size: 12px; color: #2f80ed; display: flex; align-items: center; gap: 6px; cursor: pointer; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+    .key-cell:active { opacity: .6; }
 
     .badge-active   { background: #e8f5e9; color: #27ae60; }
     .badge-inactive { background: #fff3cd; color: #856404; }
@@ -124,8 +123,7 @@
       }
       td:last-child { border-bottom: none; }
 
-      .key-cell { flex-direction: column; align-items: flex-start; gap: 4px; word-break: break-all; }
-      .key-cell span { font-size: 12px; max-width: none; }
+      .key-cell { word-break: break-all; }
 
       .action-btns { flex-direction: column; width: 100%; }
       .action-btns .btn { width: 100%; justify-content: center; min-height: 44px; }
@@ -211,6 +209,13 @@
         <div class="form-group">
           <label>Zapytania (tydzień)</label>
           <input type="number" id="new-limit-weekly" value="160" min="1">
+        </div>
+        <div class="form-group" style="grid-column: 1 / -1;">
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;">
+            <input type="checkbox" id="new-unlimited" style="width:20px;height:20px;cursor:pointer;flex-shrink:0;">
+            Bez limitu zapytań (∞)
+          </label>
+          <div style="font-size:12px;color:#888;margin-top:4px;">Gdy zaznaczone, limity 4h/tygodniowe są ignorowane</div>
         </div>
 
         <div class="form-section">Dane klienta (opcjonalne)</div>
@@ -324,6 +329,19 @@
           <label>Zapytania (tydzień)</label>
           <input type="number" id="edit-limit-weekly" min="1">
         </div>
+        <div class="form-group" style="grid-column: 1 / -1;">
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;">
+            <input type="checkbox" id="edit-unlimited" style="width:20px;height:20px;cursor:pointer;flex-shrink:0;">
+            Bez limitu zapytań (∞)
+          </label>
+          <div style="font-size:12px;color:#888;margin-top:4px;">Gdy zaznaczone, limity 4h/tygodniowe są ignorowane</div>
+        </div>
+
+        <div class="form-section" style="margin-top:20px;">Zarządzanie</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;grid-column:1/-1;">
+          <button class="btn btn-secondary btn-sm" onclick="resetCounters(editingKey)">↺ Reset limitów</button>
+          <button class="btn btn-secondary btn-sm" onclick="deleteDevices(editingKey)">📱 Usuń urządzenia</button>
+        </div>
       </div>
     </div>
     <div class="modal-footer">
@@ -411,6 +429,7 @@
     if (!key)     { toast('Wygeneruj lub wpisz klucz'); return; }
     if (!expires) { toast('Ustaw datę ważności'); return; }
 
+    const isUnlimited = document.getElementById('new-unlimited').checked;
     const body = {
       license_key: key, plan, is_active: true,
       expires_at: expires + 'T23:59:59Z',
@@ -418,7 +437,7 @@
       query_limit_4h: lim4h, query_limit_weekly: limWeek,
       queries_4h_count: 0, queries_weekly_count: 0,
       customer_name: custName, customer_email: custEmail,
-      customer_field: custField, price,
+      customer_field: custField, price, is_unlimited: isUnlimited,
     };
 
     try {
@@ -500,26 +519,21 @@
 
       return `<tr>
         <td data-label="Klucz">
-          <div class="key-cell">
-            <span>${key}</span>
-            <button class="copy-btn" onclick="copyToClipboard('${keyEsc}')">📋</button>
-          </div>
+          <div class="key-cell" onclick="copyToClipboard('${keyEsc}')" title="Kliknij, aby skopiować">${key}</div>
         </td>
         <td data-label="Klient" class="customer-cell">${customerHtml}</td>
         <td data-label="Plan">${esc(l.plan || '—')}</td>
         <td data-label="Status"><span class="badge-pill ${statusClass}">${statusText}</span></td>
         <td data-label="Ważna do">${expiresStr}</td>
         <td data-label="Urządzenia">${devCount} / ${l.device_limit || 2}</td>
-        <td data-label="Limity" class="limits-cell">${rem4h}/${l.query_limit_4h} (4h)<br>${remW}/${l.query_limit_weekly} (tydz.)</td>
+        <td data-label="Limity" class="limits-cell">${l.is_unlimited ? '<span class="badge-pill badge-active">∞ Bez limitu</span>' : `${rem4h}/${l.query_limit_4h} (4h)<br>${remW}/${l.query_limit_weekly} (tydz.)`}</td>
         <td data-label="Akcje">
           <div class="action-btns">
             <button class="btn btn-secondary btn-sm" onclick="openEdit('${keyEsc}')">✏️ Edytuj</button>
             ${l.is_active && !expired
-              ? `<button class="btn btn-danger btn-sm" onclick="toggleActive('${keyEsc}', false)">Dezaktywuj</button>`
-              : `<button class="btn btn-success btn-sm" onclick="toggleActive('${keyEsc}', true)">Aktywuj</button>`}
-            <button class="btn btn-secondary btn-sm" onclick="resetCounters('${keyEsc}')">Reset limitów</button>
-            <button class="btn btn-secondary btn-sm" onclick="deleteDevices('${keyEsc}')">Usuń urządzenia</button>
-            <button class="btn btn-danger btn-sm" onclick="deleteLicense('${keyEsc}')">🗑 Usuń licencję</button>
+              ? `<button class="btn btn-secondary btn-sm" onclick="toggleActive('${keyEsc}', false)">⛔ Dezaktywuj</button>`
+              : `<button class="btn btn-success btn-sm" onclick="toggleActive('${keyEsc}', true)">✅ Aktywuj</button>`}
+            <button class="btn btn-danger btn-sm" onclick="deleteLicense('${keyEsc}')">🗑 Usuń</button>
           </div>
         </td>
       </tr>`;
@@ -550,6 +564,7 @@
     document.getElementById('edit-device-limit').value  = l.device_limit   || 2;
     document.getElementById('edit-limit-4h').value      = l.query_limit_4h || 40;
     document.getElementById('edit-limit-weekly').value  = l.query_limit_weekly || 160;
+    document.getElementById('edit-unlimited').checked   = !!l.is_unlimited;
     document.getElementById('edit-modal').style.display = 'flex';
   }
 
@@ -577,6 +592,7 @@
       device_limit:       parseInt(document.getElementById('edit-device-limit').value) || 2,
       query_limit_4h:     parseInt(document.getElementById('edit-limit-4h').value) || 40,
       query_limit_weekly: parseInt(document.getElementById('edit-limit-weekly').value) || 160,
+      is_unlimited:       document.getElementById('edit-unlimited').checked,
     };
     Object.keys(patch).forEach(k => patch[k] === undefined && delete patch[k]);
     try {
