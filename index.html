@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Moodle AI Helper — Panel Admina</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f0f2f5; color: #111; font-size: 14px; }
+    header { background: #1a1a2e; color: #fff; padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
+    header h1 { font-size: 17px; font-weight: 700; }
+    header .badge { background: #2f80ed; color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 20px; }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 24px 16px; display: grid; gap: 20px; }
+
+    .card { background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,.08); overflow: hidden; }
+    .card-header { padding: 14px 18px; border-bottom: 1px solid #f0f0f0; font-weight: 700; font-size: 13px; color: #555; text-transform: uppercase; letter-spacing: .04em; background: #fafafa; display: flex; align-items: center; justify-content: space-between; }
+    .card-body { padding: 18px; }
+
+    .form-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 14px; }
+    .form-row.wide { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-section { font-size: 11px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: .05em; margin: 16px 0 8px; padding-bottom: 4px; border-bottom: 1px solid #f0f0f0; grid-column: 1 / -1; }
+    label { font-size: 12px; font-weight: 600; color: #555; }
+    input, select, textarea { padding: 9px 11px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; width: 100%; }
+    input:focus, select:focus, textarea:focus { border-color: #2f80ed; outline: none; }
+    textarea { resize: vertical; min-height: 64px; }
+
+    .key-row { display: flex; gap: 8px; align-items: center; }
+    .key-row input { flex: 1; font-family: monospace; font-size: 13px; letter-spacing: .04em; }
+
+    .btn { padding: 9px 16px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; transition: background .15s; white-space: nowrap; }
+    .btn-primary  { background: #2f80ed; color: #fff; }
+    .btn-primary:hover  { background: #1c6edb; }
+    .btn-secondary { background: #f0f0f0; color: #333; border: 1px solid #ddd; }
+    .btn-secondary:hover { background: #e4e4e4; }
+    .btn-danger { background: #fff0f0; color: #c0392b; border: 1px solid #f5c6c6; }
+    .btn-danger:hover { background: #ffe0e0; }
+    .btn-success { background: #e8f5e9; color: #27ae60; border: 1px solid #c8e6c9; }
+    .btn-sm { padding: 5px 10px; font-size: 12px; }
+
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: rgba(0,0,0,.8); color: #fff; padding: 10px 22px; border-radius: 20px; font-size: 13px; opacity: 0; transition: all .25s; z-index: 9999; pointer-events: none; }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    /* Table */
+    .tbl-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { text-align: left; padding: 10px 12px; background: #f7f8fa; font-weight: 600; color: #666; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; border-bottom: 2px solid #eee; white-space: nowrap; }
+    td { padding: 10px 12px; border-bottom: 1px solid #f2f2f2; vertical-align: middle; }
+    tr:hover td { background: #fafcff; }
+    tr:last-child td { border-bottom: none; }
+
+    .key-cell { font-family: monospace; font-size: 12px; color: #444; display: flex; align-items: center; gap: 6px; }
+    .copy-btn { background: none; border: none; cursor: pointer; color: #aaa; padding: 2px 4px; border-radius: 3px; font-size: 13px; }
+    .copy-btn:hover { color: #2f80ed; background: #eef4ff; }
+
+    .badge-active   { background: #e8f5e9; color: #27ae60; }
+    .badge-inactive { background: #fff3cd; color: #856404; }
+    .badge-expired  { background: #ffebee; color: #c62828; }
+    .badge-pill { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
+
+    .limits-cell { font-size: 12px; color: #666; }
+    .devices-cell { font-size: 12px; color: #888; }
+    .customer-cell { max-width: 180px; }
+    .customer-name { font-weight: 600; color: #222; }
+    .customer-meta { font-size: 11px; color: #888; margin-top: 2px; }
+    .price-tag { display: inline-block; background: #f0f7ff; color: #2f80ed; font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-top: 2px; }
+    .no-customer { color: #bbb; font-size: 12px; font-style: italic; }
+
+    #cfg-bar { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+    #cfg-bar .form-group { min-width: 240px; flex: 1; }
+
+    .search-bar { display: flex; gap: 10px; align-items: center; }
+    .search-bar input { max-width: 280px; }
+
+    .empty-state { text-align: center; color: #aaa; padding: 40px 0; font-size: 13px; }
+
+    /* Edit modal */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 16px; }
+    .modal-box { background: #fff; border-radius: 12px; width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto; box-shadow: 0 8px 40px rgba(0,0,0,.2); }
+    .modal-header { padding: 18px 20px 14px; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: #fff; z-index: 1; }
+    .modal-header h3 { font-size: 16px; font-weight: 700; }
+    .modal-close { background: none; border: none; cursor: pointer; font-size: 20px; color: #aaa; padding: 2px 6px; }
+    .modal-close:hover { color: #333; }
+    .modal-body { padding: 18px 20px; }
+    .modal-footer { padding: 14px 20px; border-top: 1px solid #eee; display: flex; gap: 10px; justify-content: flex-end; }
+    .modal-key { font-family: monospace; font-size: 12px; color: #888; margin-top: 2px; }
+
+    @media (max-width: 600px) {
+      .form-row { grid-template-columns: 1fr 1fr; }
+      .modal-box { border-radius: 0; max-height: 100vh; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Moodle AI Helper</h1>
+  <span class="badge">Panel Admina</span>
+</header>
+
+<div class="container">
+
+  <!-- CONFIG -->
+  <div class="card" id="cfg-card">
+    <div class="card-header">Konfiguracja Supabase</div>
+    <div class="card-body">
+      <div id="cfg-bar">
+        <div class="form-group">
+          <label>Service Role Key</label>
+          <input type="password" id="cfg-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+        </div>
+        <button class="btn btn-primary" onclick="saveConfig()">Połącz</button>
+        <button class="btn btn-secondary" onclick="clearConfig()">Wyloguj</button>
+      </div>
+      <div id="cfg-status" style="margin-top:10px; font-size:12px; color:#888;"></div>
+    </div>
+  </div>
+
+  <!-- CREATE LICENSE -->
+  <div class="card" id="create-card" style="display:none">
+    <div class="card-header">Nowa Licencja</div>
+    <div class="card-body">
+      <div class="form-row wide">
+        <div class="form-section">Licencja</div>
+        <div class="form-group" style="grid-column: span 2;">
+          <label>Klucz licencji</label>
+          <div class="key-row">
+            <input type="text" id="new-key" placeholder="MOODLEAI-XXXX-XXXX-XXXX-XXXX" spellcheck="false">
+            <button class="btn btn-secondary" onclick="generateKey()">Generuj</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Plan</label>
+          <input type="text" id="new-plan" value="Basic" placeholder="Basic, Pro, …">
+        </div>
+        <div class="form-group">
+          <label>Ważna do</label>
+          <input type="date" id="new-expires">
+        </div>
+        <div class="form-group">
+          <label>Limit urządzeń</label>
+          <input type="number" id="new-device-limit" value="2" min="1" max="10">
+        </div>
+        <div class="form-group">
+          <label>Limit zapytań (4h)</label>
+          <input type="number" id="new-limit-4h" value="40" min="1">
+        </div>
+        <div class="form-group">
+          <label>Limit zapytań (tydzień)</label>
+          <input type="number" id="new-limit-weekly" value="160" min="1">
+        </div>
+
+        <div class="form-section">Dane klienta (opcjonalne)</div>
+        <div class="form-group">
+          <label>Imię i Nazwisko</label>
+          <input type="text" id="new-customer-name" placeholder="Jan Kowalski">
+        </div>
+        <div class="form-group">
+          <label>E-mail</label>
+          <input type="email" id="new-customer-email" placeholder="jan@example.com">
+        </div>
+        <div class="form-group">
+          <label>Kierunek</label>
+          <input type="text" id="new-customer-field" placeholder="Informatyka">
+        </div>
+        <div class="form-group">
+          <label>Cena (PLN/mies.)</label>
+          <input type="number" id="new-price" placeholder="30" min="0" step="0.01">
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="createLicense()">➕ Utwórz licencję</button>
+    </div>
+  </div>
+
+  <!-- LICENSE LIST -->
+  <div class="card" id="list-card" style="display:none">
+    <div class="card-header">
+      <span>Licencje (<span id="license-count">…</span>)</span>
+      <div class="search-bar">
+        <input type="text" id="search" placeholder="Szukaj klucza, klienta, planu…" oninput="renderTable()" style="padding:6px 10px;">
+        <button class="btn btn-secondary btn-sm" onclick="loadLicenses()">↻ Odśwież</button>
+      </div>
+    </div>
+    <div class="card-body" style="padding:0;">
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Klucz licencji</th>
+              <th>Klient</th>
+              <th>Plan</th>
+              <th>Status</th>
+              <th>Ważna do</th>
+              <th>Urządzenia</th>
+              <th>Limity zapytań</th>
+              <th>Akcje</th>
+            </tr>
+          </thead>
+          <tbody id="license-tbody">
+            <tr><td colspan="8" class="empty-state">Ładowanie…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="edit-modal" style="display:none" onclick="modalOverlayClick(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <h3 id="modal-title">Edytuj licencję</h3>
+        <div class="modal-key" id="modal-key-display"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row wide">
+        <div class="form-section">Dane klienta</div>
+        <div class="form-group">
+          <label>Imię i Nazwisko</label>
+          <input type="text" id="edit-customer-name" placeholder="Jan Kowalski">
+        </div>
+        <div class="form-group">
+          <label>E-mail</label>
+          <input type="email" id="edit-customer-email" placeholder="jan@example.com">
+        </div>
+        <div class="form-group">
+          <label>Kierunek</label>
+          <input type="text" id="edit-customer-field" placeholder="Informatyka">
+        </div>
+        <div class="form-group">
+          <label>Cena (PLN/mies.)</label>
+          <input type="number" id="edit-price" placeholder="30" min="0" step="0.01">
+        </div>
+        <div class="form-group" style="grid-column: 1 / -1;">
+          <label>Notatki</label>
+          <textarea id="edit-notes" placeholder="Dowolne uwagi…"></textarea>
+        </div>
+
+        <div class="form-section">Licencja</div>
+        <div class="form-group">
+          <label>Plan</label>
+          <input type="text" id="edit-plan">
+        </div>
+        <div class="form-group">
+          <label>Ważna do</label>
+          <input type="date" id="edit-expires">
+        </div>
+        <div class="form-group">
+          <label>Limit urządzeń</label>
+          <input type="number" id="edit-device-limit" min="1" max="10">
+        </div>
+        <div class="form-group">
+          <label>Limit zapytań (4h)</label>
+          <input type="number" id="edit-limit-4h" min="1">
+        </div>
+        <div class="form-group">
+          <label>Limit zapytań (tydzień)</label>
+          <input type="number" id="edit-limit-weekly" min="1">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">Anuluj</button>
+      <button class="btn btn-primary" onclick="saveEdit()">💾 Zapisz</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const SUPABASE_URL = 'https://grzodrodxhndpxwkfdzn.supabase.co';
+  let SERVICE_KEY = '';
+  let allLicenses = [];
+  let deviceCounts = {};
+  let editingKey = null;
+
+  // ── Config ────────────────────────────────────────────────────────────────
+
+  function saveConfig() {
+    const k = document.getElementById('cfg-key').value.trim();
+    if (!k) { toast('Wpisz Service Role Key'); return; }
+    SERVICE_KEY = k;
+    localStorage.setItem('mah_admin_key', k);
+    onConnected();
+  }
+
+  function clearConfig() {
+    SERVICE_KEY = '';
+    localStorage.removeItem('mah_admin_key');
+    document.getElementById('cfg-key').value = '';
+    document.getElementById('cfg-status').textContent = '';
+    document.getElementById('create-card').style.display = 'none';
+    document.getElementById('list-card').style.display = 'none';
+    document.getElementById('license-tbody').innerHTML = '<tr><td colspan="8" class="empty-state">Ładowanie…</td></tr>';
+  }
+
+  function onConnected() {
+    document.getElementById('cfg-status').innerHTML = '<span style="color:#27ae60;">✓ Połączono</span>';
+    document.getElementById('create-card').style.display = '';
+    document.getElementById('list-card').style.display = '';
+    setDefaultExpiry();
+    generateKey();
+    loadLicenses();
+  }
+
+  function headers() {
+    return {
+      'apikey': SERVICE_KEY,
+      'Authorization': 'Bearer ' + SERVICE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation',
+    };
+  }
+
+  // ── Key generation ────────────────────────────────────────────────────────
+
+  function generateKey() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const seg = () => Array.from({length: 4}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+    document.getElementById('new-key').value = `MOODLEAI-${seg()}-${seg()}-${seg()}-${seg()}`;
+  }
+
+  function setDefaultExpiry() {
+    const d = new Date();
+    d.setFullYear(d.getFullYear() + 1);
+    document.getElementById('new-expires').value = d.toISOString().slice(0, 10);
+  }
+
+  // ── Create license ────────────────────────────────────────────────────────
+
+  async function createLicense() {
+    const key          = document.getElementById('new-key').value.trim();
+    const plan         = document.getElementById('new-plan').value.trim() || 'Basic';
+    const expires      = document.getElementById('new-expires').value;
+    const devLim       = parseInt(document.getElementById('new-device-limit').value) || 2;
+    const lim4h        = parseInt(document.getElementById('new-limit-4h').value) || 40;
+    const limWeek      = parseInt(document.getElementById('new-limit-weekly').value) || 160;
+    const custName     = document.getElementById('new-customer-name').value.trim() || null;
+    const custEmail    = document.getElementById('new-customer-email').value.trim() || null;
+    const custField    = document.getElementById('new-customer-field').value.trim() || null;
+    const price        = parseFloat(document.getElementById('new-price').value) || null;
+
+    if (!key)     { toast('Wygeneruj lub wpisz klucz licencji'); return; }
+    if (!expires) { toast('Ustaw datę ważności'); return; }
+
+    const body = {
+      license_key:          key,
+      plan,
+      is_active:            true,
+      expires_at:           expires + 'T23:59:59Z',
+      device_limit:         devLim,
+      token_limit:          0,
+      tokens_used:          0,
+      query_limit_4h:       lim4h,
+      query_limit_weekly:   limWeek,
+      queries_4h_count:     0,
+      queries_weekly_count: 0,
+      customer_name:        custName,
+      customer_email:       custEmail,
+      customer_field:       custField,
+      price,
+    };
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/licenses`, {
+        method: 'POST', headers: headers(), body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        if (err.code === '23505') throw new Error('Ten klucz już istnieje w bazie');
+        throw new Error(err.message || `HTTP ${res.status}`);
+      }
+      toast('✅ Licencja utworzona!');
+      copyToClipboard(key, false);
+      generateKey();
+      // Clear customer fields
+      ['new-customer-name','new-customer-email','new-customer-field','new-price'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      loadLicenses();
+    } catch (e) {
+      toast('❌ ' + e.message);
+    }
+  }
+
+  // ── Load licenses ─────────────────────────────────────────────────────────
+
+  async function loadLicenses() {
+    if (!SERVICE_KEY) return;
+    try {
+      const [licRes, devRes] = await Promise.all([
+        fetch(`${SUPABASE_URL}/rest/v1/licenses?select=*&order=expires_at.desc`, { headers: headers() }),
+        fetch(`${SUPABASE_URL}/rest/v1/devices?select=license_key`, { headers: headers() }),
+      ]);
+      if (!licRes.ok) throw new Error('Błąd pobierania licencji');
+
+      allLicenses = await licRes.json();
+      const devices = devRes.ok ? await devRes.json() : [];
+
+      deviceCounts = {};
+      devices.forEach(d => {
+        deviceCounts[d.license_key] = (deviceCounts[d.license_key] || 0) + 1;
+      });
+
+      renderTable();
+    } catch (e) {
+      toast('❌ ' + e.message);
+    }
+  }
+
+  // ── Render table ──────────────────────────────────────────────────────────
+
+  function renderTable() {
+    const q = (document.getElementById('search').value || '').toLowerCase();
+    const filtered = allLicenses.filter(l => {
+      if (!q) return true;
+      return l.license_key.toLowerCase().includes(q)
+          || (l.plan || '').toLowerCase().includes(q)
+          || (l.customer_name || '').toLowerCase().includes(q)
+          || (l.customer_email || '').toLowerCase().includes(q)
+          || (l.customer_field || '').toLowerCase().includes(q);
+    });
+
+    document.getElementById('license-count').textContent = filtered.length + ' / ' + allLicenses.length;
+
+    const tbody = document.getElementById('license-tbody');
+    if (!filtered.length) {
+      tbody.innerHTML = '<tr><td colspan="8" class="empty-state">Brak wyników</td></tr>';
+      return;
+    }
+
+    const now = new Date();
+    tbody.innerHTML = filtered.map(l => {
+      const expired     = new Date(l.expires_at) < now;
+      const statusClass = !l.is_active ? 'badge-inactive' : expired ? 'badge-expired' : 'badge-active';
+      const statusText  = !l.is_active ? 'Dezaktywowana' : expired ? 'Wygasła' : 'Aktywna';
+      const expiresStr  = (l.expires_at || '').slice(0, 10);
+      const devCount    = deviceCounts[l.license_key] || 0;
+      const key         = l.license_key;
+
+      const rem4h = computeRemaining(l.queries_4h_count, l.queries_4h_start, l.query_limit_4h, 4 * 3600 * 1000);
+      const remW  = computeRemaining(l.queries_weekly_count, l.queries_weekly_start, l.query_limit_weekly, 7 * 24 * 3600 * 1000);
+
+      const customerHtml = l.customer_name
+        ? `<div class="customer-name">${esc(l.customer_name)}</div>
+           <div class="customer-meta">${l.customer_field ? esc(l.customer_field) : ''}</div>
+           ${l.price != null ? `<span class="price-tag">${Number(l.price).toFixed(2)} zł</span>` : ''}`
+        : `<span class="no-customer">—</span>`;
+
+      const keyEsc = key.replace(/'/g, "\\'");
+
+      return `<tr>
+        <td>
+          <div class="key-cell">
+            <span style="max-width:200px;overflow:hidden;text-overflow:ellipsis;display:block;">${key}</span>
+            <button class="copy-btn" title="Kopiuj" onclick="copyToClipboard('${keyEsc}')">📋</button>
+          </div>
+        </td>
+        <td class="customer-cell">${customerHtml}</td>
+        <td>${esc(l.plan || '—')}</td>
+        <td><span class="badge-pill ${statusClass}">${statusText}</span></td>
+        <td>${expiresStr}</td>
+        <td class="devices-cell">${devCount} / ${l.device_limit || 2}</td>
+        <td class="limits-cell">${rem4h}/${l.query_limit_4h} (4h)<br>${remW}/${l.query_limit_weekly} (tydz.)</td>
+        <td>
+          <div style="display:flex; gap:5px; flex-wrap:wrap;">
+            <button class="btn btn-secondary btn-sm" onclick="openEdit('${keyEsc}')">✏️ Edytuj</button>
+            ${l.is_active && !expired
+              ? `<button class="btn btn-danger btn-sm" onclick="toggleActive('${keyEsc}', false)">Dezaktywuj</button>`
+              : `<button class="btn btn-success btn-sm" onclick="toggleActive('${keyEsc}', true)">Aktywuj</button>`}
+            <button class="btn btn-secondary btn-sm" onclick="resetCounters('${keyEsc}')">Reset</button>
+            <button class="btn btn-secondary btn-sm" onclick="deleteDevices('${keyEsc}')">Urządz.</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteLicense('${keyEsc}')">🗑 Usuń</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  function computeRemaining(count, start, limit, windowMs) {
+    if (!start) return limit;
+    const elapsed = Date.now() - new Date(start).getTime();
+    if (elapsed >= windowMs) return limit;
+    return Math.max(0, (limit || 0) - (count || 0));
+  }
+
+  // ── Edit modal ────────────────────────────────────────────────────────────
+
+  function openEdit(key) {
+    const l = allLicenses.find(x => x.license_key === key);
+    if (!l) return;
+    editingKey = key;
+
+    document.getElementById('modal-title').textContent = 'Edytuj licencję';
+    document.getElementById('modal-key-display').textContent = key;
+    document.getElementById('edit-customer-name').value  = l.customer_name  || '';
+    document.getElementById('edit-customer-email').value = l.customer_email || '';
+    document.getElementById('edit-customer-field').value = l.customer_field || '';
+    document.getElementById('edit-price').value          = l.price != null ? l.price : '';
+    document.getElementById('edit-notes').value          = l.notes          || '';
+    document.getElementById('edit-plan').value           = l.plan           || '';
+    document.getElementById('edit-expires').value        = (l.expires_at || '').slice(0, 10);
+    document.getElementById('edit-device-limit').value   = l.device_limit   || 2;
+    document.getElementById('edit-limit-4h').value       = l.query_limit_4h || 40;
+    document.getElementById('edit-limit-weekly').value   = l.query_limit_weekly || 160;
+
+    document.getElementById('edit-modal').style.display = 'flex';
+  }
+
+  function closeModal() {
+    document.getElementById('edit-modal').style.display = 'none';
+    editingKey = null;
+  }
+
+  function modalOverlayClick(e) {
+    if (e.target === document.getElementById('edit-modal')) closeModal();
+  }
+
+  async function saveEdit() {
+    if (!editingKey) return;
+    const expires = document.getElementById('edit-expires').value;
+    const price   = document.getElementById('edit-price').value;
+
+    const patch = {
+      customer_name:  document.getElementById('edit-customer-name').value.trim()  || null,
+      customer_email: document.getElementById('edit-customer-email').value.trim() || null,
+      customer_field: document.getElementById('edit-customer-field').value.trim() || null,
+      price:          price !== '' ? parseFloat(price) : null,
+      notes:          document.getElementById('edit-notes').value.trim() || null,
+      plan:           document.getElementById('edit-plan').value.trim() || null,
+      expires_at:     expires ? expires + 'T23:59:59Z' : undefined,
+      device_limit:   parseInt(document.getElementById('edit-device-limit').value) || 2,
+      query_limit_4h: parseInt(document.getElementById('edit-limit-4h').value) || 40,
+      query_limit_weekly: parseInt(document.getElementById('edit-limit-weekly').value) || 160,
+    };
+    // Remove undefined keys
+    Object.keys(patch).forEach(k => patch[k] === undefined && delete patch[k]);
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/licenses?license_key=eq.${encodeURIComponent(editingKey)}`, {
+        method: 'PATCH', headers: headers(), body: JSON.stringify(patch),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      // Update local cache
+      const l = allLicenses.find(x => x.license_key === editingKey);
+      if (l) Object.assign(l, patch);
+
+      toast('✅ Zapisano');
+      closeModal();
+      renderTable();
+    } catch(e) { toast('❌ ' + e.message); }
+  }
+
+  // ── Actions ───────────────────────────────────────────────────────────────
+
+  async function toggleActive(key, active) {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/licenses?license_key=eq.${encodeURIComponent(key)}`, {
+        method: 'PATCH', headers: headers(), body: JSON.stringify({ is_active: active }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      toast(active ? '✅ Aktywowano' : '⛔ Dezaktywowano');
+      const l = allLicenses.find(x => x.license_key === key);
+      if (l) l.is_active = active;
+      renderTable();
+    } catch(e) { toast('❌ ' + e.message); }
+  }
+
+  async function resetCounters(key) {
+    if (!confirm('Zresetować liczniki zapytań dla tej licencji?')) return;
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/licenses?license_key=eq.${encodeURIComponent(key)}`, {
+        method: 'PATCH', headers: headers(),
+        body: JSON.stringify({
+          queries_4h_count: 0, queries_4h_start: null,
+          queries_weekly_count: 0, queries_weekly_start: null,
+        }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      toast('✅ Liczniki zresetowane');
+      const l = allLicenses.find(x => x.license_key === key);
+      if (l) { l.queries_4h_count = 0; l.queries_4h_start = null; l.queries_weekly_count = 0; l.queries_weekly_start = null; }
+      renderTable();
+    } catch(e) { toast('❌ ' + e.message); }
+  }
+
+  async function deleteLicense(key) {
+    if (!confirm(`Trwale usunąć licencję ${key}?\n\nSpowoduje to usunięcie licencji i wszystkich przypisanych urządzeń. Tej operacji nie można cofnąć.`)) return;
+    try {
+      await fetch(`${SUPABASE_URL}/rest/v1/devices?license_key=eq.${encodeURIComponent(key)}`, {
+        method: 'DELETE', headers: headers(),
+      });
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/licenses?license_key=eq.${encodeURIComponent(key)}`, {
+        method: 'DELETE', headers: headers(),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      toast('🗑 Licencja usunięta');
+      allLicenses = allLicenses.filter(x => x.license_key !== key);
+      delete deviceCounts[key];
+      renderTable();
+    } catch(e) { toast('❌ ' + e.message); }
+  }
+
+  async function deleteDevices(key) {
+    if (!confirm(`Usunąć wszystkie urządzenia przypisane do tej licencji?\n\nUżytkownik będzie musiał aktywować licencję ponownie.`)) return;
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/devices?license_key=eq.${encodeURIComponent(key)}`, {
+        method: 'DELETE', headers: headers(),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      toast('✅ Urządzenia usunięte');
+      deviceCounts[key] = 0;
+      renderTable();
+    } catch(e) { toast('❌ ' + e.message); }
+  }
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
+
+  function copyToClipboard(text, showToastMsg = true) {
+    navigator.clipboard.writeText(text).then(() => {
+      if (showToastMsg) toast('Skopiowano: ' + text);
+    });
+  }
+
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  let toastTimer;
+  function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
+  }
+
+  // ── Init ──────────────────────────────────────────────────────────────────
+
+  const saved = localStorage.getItem('mah_admin_key');
+  if (saved) {
+    document.getElementById('cfg-key').value = saved;
+    SERVICE_KEY = saved;
+    onConnected();
+  } else {
+    setDefaultExpiry();
+    generateKey();
+  }
+</script>
+</body>
+</html>
