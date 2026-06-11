@@ -7,42 +7,43 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f0f2f5; color: #111; font-size: 14px; }
-    header { background: #1a1a2e; color: #fff; padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
-    header h1 { font-size: 17px; font-weight: 700; }
+
+    header { background: #1a1a2e; color: #fff; padding: 14px 16px; display: flex; align-items: center; gap: 10px; }
+    header h1 { font-size: 16px; font-weight: 700; }
     header .badge { background: #2f80ed; color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 20px; }
 
-    .container { max-width: 1200px; margin: 0 auto; padding: 24px 16px; display: grid; gap: 20px; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 16px; display: grid; gap: 16px; }
 
     .card { background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,.08); overflow: hidden; }
-    .card-header { padding: 14px 18px; border-bottom: 1px solid #f0f0f0; font-weight: 700; font-size: 13px; color: #555; text-transform: uppercase; letter-spacing: .04em; background: #fafafa; display: flex; align-items: center; justify-content: space-between; }
-    .card-body { padding: 18px; }
+    .card-header { padding: 12px 16px; border-bottom: 1px solid #f0f0f0; font-weight: 700; font-size: 12px; color: #555; text-transform: uppercase; letter-spacing: .04em; background: #fafafa; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+    .card-body { padding: 16px; }
 
-    .form-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 14px; }
-    .form-row.wide { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+    .form-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin-bottom: 14px; }
     .form-group { display: flex; flex-direction: column; gap: 5px; }
-    .form-section { font-size: 11px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: .05em; margin: 16px 0 8px; padding-bottom: 4px; border-bottom: 1px solid #f0f0f0; grid-column: 1 / -1; }
+    .form-section { font-size: 11px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: .05em; margin: 14px 0 6px; padding-bottom: 4px; border-bottom: 1px solid #f0f0f0; grid-column: 1 / -1; }
     label { font-size: 12px; font-weight: 600; color: #555; }
-    input, select, textarea { padding: 9px 11px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; width: 100%; }
+    input, select, textarea { padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; width: 100%; -webkit-appearance: none; }
     input:focus, select:focus, textarea:focus { border-color: #2f80ed; outline: none; }
-    textarea { resize: vertical; min-height: 64px; }
+    textarea { resize: vertical; min-height: 72px; }
 
     .key-row { display: flex; gap: 8px; align-items: center; }
-    .key-row input { flex: 1; font-family: monospace; font-size: 13px; letter-spacing: .04em; }
+    .key-row input { flex: 1; font-family: monospace; font-size: 13px; }
 
-    .btn { padding: 9px 16px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; transition: background .15s; white-space: nowrap; }
+    .btn { padding: 11px 16px; border-radius: 8px; border: none; cursor: pointer; font-size: 14px; font-weight: 600; transition: background .15s; white-space: nowrap; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
     .btn-primary  { background: #2f80ed; color: #fff; }
-    .btn-primary:hover  { background: #1c6edb; }
+    .btn-primary:active  { background: #1c6edb; }
     .btn-secondary { background: #f0f0f0; color: #333; border: 1px solid #ddd; }
-    .btn-secondary:hover { background: #e4e4e4; }
+    .btn-secondary:active { background: #e4e4e4; }
     .btn-danger { background: #fff0f0; color: #c0392b; border: 1px solid #f5c6c6; }
-    .btn-danger:hover { background: #ffe0e0; }
+    .btn-danger:active { background: #ffe0e0; }
     .btn-success { background: #e8f5e9; color: #27ae60; border: 1px solid #c8e6c9; }
-    .btn-sm { padding: 5px 10px; font-size: 12px; }
+    .btn-sm { padding: 8px 12px; font-size: 13px; min-height: 36px; }
+    .btn-full { width: 100%; }
 
-    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: rgba(0,0,0,.8); color: #fff; padding: 10px 22px; border-radius: 20px; font-size: 13px; opacity: 0; transition: all .25s; z-index: 9999; pointer-events: none; }
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: rgba(0,0,0,.82); color: #fff; padding: 12px 24px; border-radius: 24px; font-size: 14px; opacity: 0; transition: all .25s; z-index: 9999; pointer-events: none; max-width: 90vw; text-align: center; }
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-    /* Table */
+    /* ── Desktop table ── */
     .tbl-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
     th { text-align: left; padding: 10px 12px; background: #f7f8fa; font-weight: 600; color: #666; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; border-bottom: 2px solid #eee; white-space: nowrap; }
@@ -51,44 +52,105 @@
     tr:last-child td { border-bottom: none; }
 
     .key-cell { font-family: monospace; font-size: 12px; color: #444; display: flex; align-items: center; gap: 6px; }
-    .copy-btn { background: none; border: none; cursor: pointer; color: #aaa; padding: 2px 4px; border-radius: 3px; font-size: 13px; }
-    .copy-btn:hover { color: #2f80ed; background: #eef4ff; }
+    .copy-btn { background: none; border: none; cursor: pointer; color: #aaa; padding: 4px 6px; border-radius: 4px; font-size: 14px; min-width: 32px; min-height: 32px; display: inline-flex; align-items: center; justify-content: center; }
+    .copy-btn:active { color: #2f80ed; background: #eef4ff; }
 
     .badge-active   { background: #e8f5e9; color: #27ae60; }
     .badge-inactive { background: #fff3cd; color: #856404; }
     .badge-expired  { background: #ffebee; color: #c62828; }
-    .badge-pill { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
+    .badge-pill { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
 
-    .limits-cell { font-size: 12px; color: #666; }
-    .devices-cell { font-size: 12px; color: #888; }
+    .limits-cell { font-size: 12px; color: #666; line-height: 1.6; }
     .customer-cell { max-width: 180px; }
     .customer-name { font-weight: 600; color: #222; }
     .customer-meta { font-size: 11px; color: #888; margin-top: 2px; }
-    .price-tag { display: inline-block; background: #f0f7ff; color: #2f80ed; font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-top: 2px; }
+    .price-tag { display: inline-block; background: #f0f7ff; color: #2f80ed; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 4px; margin-top: 3px; }
     .no-customer { color: #bbb; font-size: 12px; font-style: italic; }
 
-    #cfg-bar { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
-    #cfg-bar .form-group { min-width: 240px; flex: 1; }
+    .action-btns { display: flex; gap: 5px; flex-wrap: wrap; }
 
-    .search-bar { display: flex; gap: 10px; align-items: center; }
-    .search-bar input { max-width: 280px; }
+    #cfg-bar { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+    #cfg-bar .form-group { min-width: 220px; flex: 1; }
+
+    .search-bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .search-bar input { min-width: 180px; flex: 1; padding: 8px 12px; }
 
     .empty-state { text-align: center; color: #aaa; padding: 40px 0; font-size: 13px; }
 
-    /* Edit modal */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 16px; }
-    .modal-box { background: #fff; border-radius: 12px; width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto; box-shadow: 0 8px 40px rgba(0,0,0,.2); }
-    .modal-header { padding: 18px 20px 14px; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: #fff; z-index: 1; }
+    /* ── Edit modal ── */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 1000; display: flex; align-items: flex-end; justify-content: center; }
+    .modal-box { background: #fff; border-radius: 16px 16px 0 0; width: 100%; max-width: 600px; max-height: 92vh; overflow-y: auto; box-shadow: 0 -4px 32px rgba(0,0,0,.2); }
+    .modal-header { padding: 16px 18px 12px; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: #fff; z-index: 1; }
     .modal-header h3 { font-size: 16px; font-weight: 700; }
-    .modal-close { background: none; border: none; cursor: pointer; font-size: 20px; color: #aaa; padding: 2px 6px; }
-    .modal-close:hover { color: #333; }
-    .modal-body { padding: 18px 20px; }
-    .modal-footer { padding: 14px 20px; border-top: 1px solid #eee; display: flex; gap: 10px; justify-content: flex-end; }
-    .modal-key { font-family: monospace; font-size: 12px; color: #888; margin-top: 2px; }
+    .modal-close { background: none; border: none; cursor: pointer; font-size: 22px; color: #aaa; padding: 4px 8px; min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+    .modal-close:active { background: #f5f5f5; color: #333; }
+    .modal-body { padding: 16px 18px; }
+    .modal-footer { padding: 12px 18px; border-top: 1px solid #eee; display: flex; gap: 10px; justify-content: flex-end; position: sticky; bottom: 0; background: #fff; }
+    .modal-key { font-family: monospace; font-size: 11px; color: #aaa; margin-top: 2px; word-break: break-all; }
 
-    @media (max-width: 600px) {
-      .form-row { grid-template-columns: 1fr 1fr; }
-      .modal-box { border-radius: 0; max-height: 100vh; }
+    /* ── Mobile: table → cards ── */
+    @media (max-width: 768px) {
+      .tbl-wrap { overflow: visible; }
+      table, tbody { display: block; }
+      thead { display: none; }
+
+      tr {
+        display: block;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 1px 4px rgba(0,0,0,.08);
+        margin-bottom: 12px;
+        overflow: hidden;
+      }
+
+      td {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 10px 14px;
+        border-bottom: 1px solid #f5f5f5;
+        gap: 12px;
+      }
+      td::before {
+        content: attr(data-label);
+        font-size: 11px;
+        font-weight: 700;
+        color: #aaa;
+        text-transform: uppercase;
+        letter-spacing: .03em;
+        white-space: nowrap;
+        min-width: 72px;
+        padding-top: 1px;
+      }
+      td:last-child { border-bottom: none; }
+
+      .key-cell { flex-direction: column; align-items: flex-start; gap: 4px; word-break: break-all; }
+      .key-cell span { font-size: 12px; max-width: none; }
+
+      .action-btns { flex-direction: column; width: 100%; }
+      .action-btns .btn { width: 100%; justify-content: center; min-height: 44px; }
+
+      td[data-label="Akcje"]::before { display: none; }
+      td[data-label="Akcje"] { flex-direction: column; padding: 12px 14px; }
+
+      .customer-cell { max-width: none; }
+
+      /* Modal full-height on mobile */
+      .modal-overlay { align-items: flex-end; }
+      .modal-box { border-radius: 20px 20px 0 0; max-height: 96vh; }
+      .modal-footer { flex-direction: column-reverse; }
+      .modal-footer .btn { width: 100%; justify-content: center; }
+
+      .form-row { grid-template-columns: 1fr; }
+      .key-row { flex-direction: column; }
+      .key-row input, .key-row .btn { width: 100%; }
+
+      #cfg-bar { flex-direction: column; }
+      #cfg-bar .btn { width: 100%; }
+
+      .card-header { flex-direction: column; align-items: flex-start; }
+      .search-bar { width: 100%; }
+      .search-bar input { width: 100%; }
     }
   </style>
 </head>
@@ -108,12 +170,12 @@
       <div id="cfg-bar">
         <div class="form-group">
           <label>Service Role Key</label>
-          <input type="password" id="cfg-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+          <input type="password" id="cfg-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." autocomplete="off">
         </div>
         <button class="btn btn-primary" onclick="saveConfig()">Połącz</button>
         <button class="btn btn-secondary" onclick="clearConfig()">Wyloguj</button>
       </div>
-      <div id="cfg-status" style="margin-top:10px; font-size:12px; color:#888;"></div>
+      <div id="cfg-status" style="margin-top:10px; font-size:13px; color:#888;"></div>
     </div>
   </div>
 
@@ -121,18 +183,18 @@
   <div class="card" id="create-card" style="display:none">
     <div class="card-header">Nowa Licencja</div>
     <div class="card-body">
-      <div class="form-row wide">
+      <div class="form-row">
         <div class="form-section">Licencja</div>
-        <div class="form-group" style="grid-column: span 2;">
+        <div class="form-group" style="grid-column: 1 / -1;">
           <label>Klucz licencji</label>
           <div class="key-row">
-            <input type="text" id="new-key" placeholder="MOODLEAI-XXXX-XXXX-XXXX-XXXX" spellcheck="false">
+            <input type="text" id="new-key" placeholder="MOODLEAI-XXXX-XXXX-XXXX-XXXX" spellcheck="false" autocomplete="off">
             <button class="btn btn-secondary" onclick="generateKey()">Generuj</button>
           </div>
         </div>
         <div class="form-group">
           <label>Plan</label>
-          <input type="text" id="new-plan" value="Basic" placeholder="Basic, Pro, …">
+          <input type="text" id="new-plan" value="Basic">
         </div>
         <div class="form-group">
           <label>Ważna do</label>
@@ -143,11 +205,11 @@
           <input type="number" id="new-device-limit" value="2" min="1" max="10">
         </div>
         <div class="form-group">
-          <label>Limit zapytań (4h)</label>
+          <label>Zapytania (4h)</label>
           <input type="number" id="new-limit-4h" value="40" min="1">
         </div>
         <div class="form-group">
-          <label>Limit zapytań (tydzień)</label>
+          <label>Zapytania (tydzień)</label>
           <input type="number" id="new-limit-weekly" value="160" min="1">
         </div>
 
@@ -169,7 +231,7 @@
           <input type="number" id="new-price" placeholder="30" min="0" step="0.01">
         </div>
       </div>
-      <button class="btn btn-primary" onclick="createLicense()">➕ Utwórz licencję</button>
+      <button class="btn btn-primary btn-full" onclick="createLicense()">➕ Utwórz licencję</button>
     </div>
   </div>
 
@@ -178,8 +240,8 @@
     <div class="card-header">
       <span>Licencje (<span id="license-count">…</span>)</span>
       <div class="search-bar">
-        <input type="text" id="search" placeholder="Szukaj klucza, klienta, planu…" oninput="renderTable()" style="padding:6px 10px;">
-        <button class="btn btn-secondary btn-sm" onclick="loadLicenses()">↻ Odśwież</button>
+        <input type="search" id="search" placeholder="Szukaj…" oninput="renderTable()">
+        <button class="btn btn-secondary btn-sm" onclick="loadLicenses()">↻</button>
       </div>
     </div>
     <div class="card-body" style="padding:0;">
@@ -193,7 +255,7 @@
               <th>Status</th>
               <th>Ważna do</th>
               <th>Urządzenia</th>
-              <th>Limity zapytań</th>
+              <th>Limity</th>
               <th>Akcje</th>
             </tr>
           </thead>
@@ -218,7 +280,7 @@
       <button class="modal-close" onclick="closeModal()">×</button>
     </div>
     <div class="modal-body">
-      <div class="form-row wide">
+      <div class="form-row">
         <div class="form-section">Dane klienta</div>
         <div class="form-group">
           <label>Imię i Nazwisko</label>
@@ -255,11 +317,11 @@
           <input type="number" id="edit-device-limit" min="1" max="10">
         </div>
         <div class="form-group">
-          <label>Limit zapytań (4h)</label>
+          <label>Zapytania (4h)</label>
           <input type="number" id="edit-limit-4h" min="1">
         </div>
         <div class="form-group">
-          <label>Limit zapytań (tydzień)</label>
+          <label>Zapytania (tydzień)</label>
           <input type="number" id="edit-limit-weekly" min="1">
         </div>
       </div>
@@ -335,36 +397,28 @@
   // ── Create license ────────────────────────────────────────────────────────
 
   async function createLicense() {
-    const key          = document.getElementById('new-key').value.trim();
-    const plan         = document.getElementById('new-plan').value.trim() || 'Basic';
-    const expires      = document.getElementById('new-expires').value;
-    const devLim       = parseInt(document.getElementById('new-device-limit').value) || 2;
-    const lim4h        = parseInt(document.getElementById('new-limit-4h').value) || 40;
-    const limWeek      = parseInt(document.getElementById('new-limit-weekly').value) || 160;
-    const custName     = document.getElementById('new-customer-name').value.trim() || null;
-    const custEmail    = document.getElementById('new-customer-email').value.trim() || null;
-    const custField    = document.getElementById('new-customer-field').value.trim() || null;
-    const price        = parseFloat(document.getElementById('new-price').value) || null;
+    const key      = document.getElementById('new-key').value.trim();
+    const plan     = document.getElementById('new-plan').value.trim() || 'Basic';
+    const expires  = document.getElementById('new-expires').value;
+    const devLim   = parseInt(document.getElementById('new-device-limit').value) || 2;
+    const lim4h    = parseInt(document.getElementById('new-limit-4h').value) || 40;
+    const limWeek  = parseInt(document.getElementById('new-limit-weekly').value) || 160;
+    const custName  = document.getElementById('new-customer-name').value.trim() || null;
+    const custEmail = document.getElementById('new-customer-email').value.trim() || null;
+    const custField = document.getElementById('new-customer-field').value.trim() || null;
+    const price     = parseFloat(document.getElementById('new-price').value) || null;
 
-    if (!key)     { toast('Wygeneruj lub wpisz klucz licencji'); return; }
+    if (!key)     { toast('Wygeneruj lub wpisz klucz'); return; }
     if (!expires) { toast('Ustaw datę ważności'); return; }
 
     const body = {
-      license_key:          key,
-      plan,
-      is_active:            true,
-      expires_at:           expires + 'T23:59:59Z',
-      device_limit:         devLim,
-      token_limit:          0,
-      tokens_used:          0,
-      query_limit_4h:       lim4h,
-      query_limit_weekly:   limWeek,
-      queries_4h_count:     0,
-      queries_weekly_count: 0,
-      customer_name:        custName,
-      customer_email:       custEmail,
-      customer_field:       custField,
-      price,
+      license_key: key, plan, is_active: true,
+      expires_at: expires + 'T23:59:59Z',
+      device_limit: devLim, token_limit: 0, tokens_used: 0,
+      query_limit_4h: lim4h, query_limit_weekly: limWeek,
+      queries_4h_count: 0, queries_weekly_count: 0,
+      customer_name: custName, customer_email: custEmail,
+      customer_field: custField, price,
     };
 
     try {
@@ -373,20 +427,17 @@
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        if (err.code === '23505') throw new Error('Ten klucz już istnieje w bazie');
+        if (err.code === '23505') throw new Error('Ten klucz już istnieje');
         throw new Error(err.message || `HTTP ${res.status}`);
       }
       toast('✅ Licencja utworzona!');
       copyToClipboard(key, false);
       generateKey();
-      // Clear customer fields
       ['new-customer-name','new-customer-email','new-customer-field','new-price'].forEach(id => {
         document.getElementById(id).value = '';
       });
       loadLicenses();
-    } catch (e) {
-      toast('❌ ' + e.message);
-    }
+    } catch (e) { toast('❌ ' + e.message); }
   }
 
   // ── Load licenses ─────────────────────────────────────────────────────────
@@ -399,19 +450,12 @@
         fetch(`${SUPABASE_URL}/rest/v1/devices?select=license_key`, { headers: headers() }),
       ]);
       if (!licRes.ok) throw new Error('Błąd pobierania licencji');
-
       allLicenses = await licRes.json();
       const devices = devRes.ok ? await devRes.json() : [];
-
       deviceCounts = {};
-      devices.forEach(d => {
-        deviceCounts[d.license_key] = (deviceCounts[d.license_key] || 0) + 1;
-      });
-
+      devices.forEach(d => { deviceCounts[d.license_key] = (deviceCounts[d.license_key] || 0) + 1; });
       renderTable();
-    } catch (e) {
-      toast('❌ ' + e.message);
-    }
+    } catch (e) { toast('❌ ' + e.message); }
   }
 
   // ── Render table ──────────────────────────────────────────────────────────
@@ -443,40 +487,39 @@
       const expiresStr  = (l.expires_at || '').slice(0, 10);
       const devCount    = deviceCounts[l.license_key] || 0;
       const key         = l.license_key;
+      const keyEsc      = key.replace(/'/g, "\\'");
 
       const rem4h = computeRemaining(l.queries_4h_count, l.queries_4h_start, l.query_limit_4h, 4 * 3600 * 1000);
       const remW  = computeRemaining(l.queries_weekly_count, l.queries_weekly_start, l.query_limit_weekly, 7 * 24 * 3600 * 1000);
 
       const customerHtml = l.customer_name
         ? `<div class="customer-name">${esc(l.customer_name)}</div>
-           <div class="customer-meta">${l.customer_field ? esc(l.customer_field) : ''}</div>
+           ${l.customer_field ? `<div class="customer-meta">${esc(l.customer_field)}</div>` : ''}
            ${l.price != null ? `<span class="price-tag">${Number(l.price).toFixed(2)} zł</span>` : ''}`
         : `<span class="no-customer">—</span>`;
 
-      const keyEsc = key.replace(/'/g, "\\'");
-
       return `<tr>
-        <td>
+        <td data-label="Klucz">
           <div class="key-cell">
-            <span style="max-width:200px;overflow:hidden;text-overflow:ellipsis;display:block;">${key}</span>
-            <button class="copy-btn" title="Kopiuj" onclick="copyToClipboard('${keyEsc}')">📋</button>
+            <span>${key}</span>
+            <button class="copy-btn" onclick="copyToClipboard('${keyEsc}')">📋</button>
           </div>
         </td>
-        <td class="customer-cell">${customerHtml}</td>
-        <td>${esc(l.plan || '—')}</td>
-        <td><span class="badge-pill ${statusClass}">${statusText}</span></td>
-        <td>${expiresStr}</td>
-        <td class="devices-cell">${devCount} / ${l.device_limit || 2}</td>
-        <td class="limits-cell">${rem4h}/${l.query_limit_4h} (4h)<br>${remW}/${l.query_limit_weekly} (tydz.)</td>
-        <td>
-          <div style="display:flex; gap:5px; flex-wrap:wrap;">
+        <td data-label="Klient" class="customer-cell">${customerHtml}</td>
+        <td data-label="Plan">${esc(l.plan || '—')}</td>
+        <td data-label="Status"><span class="badge-pill ${statusClass}">${statusText}</span></td>
+        <td data-label="Ważna do">${expiresStr}</td>
+        <td data-label="Urządzenia">${devCount} / ${l.device_limit || 2}</td>
+        <td data-label="Limity" class="limits-cell">${rem4h}/${l.query_limit_4h} (4h)<br>${remW}/${l.query_limit_weekly} (tydz.)</td>
+        <td data-label="Akcje">
+          <div class="action-btns">
             <button class="btn btn-secondary btn-sm" onclick="openEdit('${keyEsc}')">✏️ Edytuj</button>
             ${l.is_active && !expired
               ? `<button class="btn btn-danger btn-sm" onclick="toggleActive('${keyEsc}', false)">Dezaktywuj</button>`
               : `<button class="btn btn-success btn-sm" onclick="toggleActive('${keyEsc}', true)">Aktywuj</button>`}
-            <button class="btn btn-secondary btn-sm" onclick="resetCounters('${keyEsc}')">Reset</button>
-            <button class="btn btn-secondary btn-sm" onclick="deleteDevices('${keyEsc}')">Urządz.</button>
-            <button class="btn btn-danger btn-sm" onclick="deleteLicense('${keyEsc}')">🗑 Usuń</button>
+            <button class="btn btn-secondary btn-sm" onclick="resetCounters('${keyEsc}')">Reset limitów</button>
+            <button class="btn btn-secondary btn-sm" onclick="deleteDevices('${keyEsc}')">Usuń urządzenia</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteLicense('${keyEsc}')">🗑 Usuń licencję</button>
           </div>
         </td>
       </tr>`;
@@ -496,8 +539,6 @@
     const l = allLicenses.find(x => x.license_key === key);
     if (!l) return;
     editingKey = key;
-
-    document.getElementById('modal-title').textContent = 'Edytuj licencję';
     document.getElementById('modal-key-display').textContent = key;
     document.getElementById('edit-customer-name').value  = l.customer_name  || '';
     document.getElementById('edit-customer-email').value = l.customer_email || '';
@@ -506,10 +547,9 @@
     document.getElementById('edit-notes').value          = l.notes          || '';
     document.getElementById('edit-plan').value           = l.plan           || '';
     document.getElementById('edit-expires').value        = (l.expires_at || '').slice(0, 10);
-    document.getElementById('edit-device-limit').value   = l.device_limit   || 2;
-    document.getElementById('edit-limit-4h').value       = l.query_limit_4h || 40;
-    document.getElementById('edit-limit-weekly').value   = l.query_limit_weekly || 160;
-
+    document.getElementById('edit-device-limit').value  = l.device_limit   || 2;
+    document.getElementById('edit-limit-4h').value      = l.query_limit_4h || 40;
+    document.getElementById('edit-limit-weekly').value  = l.query_limit_weekly || 160;
     document.getElementById('edit-modal').style.display = 'flex';
   }
 
@@ -526,32 +566,26 @@
     if (!editingKey) return;
     const expires = document.getElementById('edit-expires').value;
     const price   = document.getElementById('edit-price').value;
-
     const patch = {
-      customer_name:  document.getElementById('edit-customer-name').value.trim()  || null,
-      customer_email: document.getElementById('edit-customer-email').value.trim() || null,
-      customer_field: document.getElementById('edit-customer-field').value.trim() || null,
-      price:          price !== '' ? parseFloat(price) : null,
-      notes:          document.getElementById('edit-notes').value.trim() || null,
-      plan:           document.getElementById('edit-plan').value.trim() || null,
-      expires_at:     expires ? expires + 'T23:59:59Z' : undefined,
-      device_limit:   parseInt(document.getElementById('edit-device-limit').value) || 2,
-      query_limit_4h: parseInt(document.getElementById('edit-limit-4h').value) || 40,
+      customer_name:      document.getElementById('edit-customer-name').value.trim()  || null,
+      customer_email:     document.getElementById('edit-customer-email').value.trim() || null,
+      customer_field:     document.getElementById('edit-customer-field').value.trim() || null,
+      price:              price !== '' ? parseFloat(price) : null,
+      notes:              document.getElementById('edit-notes').value.trim() || null,
+      plan:               document.getElementById('edit-plan').value.trim() || null,
+      expires_at:         expires ? expires + 'T23:59:59Z' : undefined,
+      device_limit:       parseInt(document.getElementById('edit-device-limit').value) || 2,
+      query_limit_4h:     parseInt(document.getElementById('edit-limit-4h').value) || 40,
       query_limit_weekly: parseInt(document.getElementById('edit-limit-weekly').value) || 160,
     };
-    // Remove undefined keys
     Object.keys(patch).forEach(k => patch[k] === undefined && delete patch[k]);
-
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/licenses?license_key=eq.${encodeURIComponent(editingKey)}`, {
         method: 'PATCH', headers: headers(), body: JSON.stringify(patch),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-      // Update local cache
       const l = allLicenses.find(x => x.license_key === editingKey);
       if (l) Object.assign(l, patch);
-
       toast('✅ Zapisano');
       closeModal();
       renderTable();
@@ -574,14 +608,11 @@
   }
 
   async function resetCounters(key) {
-    if (!confirm('Zresetować liczniki zapytań dla tej licencji?')) return;
+    if (!confirm('Zresetować liczniki zapytań?')) return;
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/licenses?license_key=eq.${encodeURIComponent(key)}`, {
         method: 'PATCH', headers: headers(),
-        body: JSON.stringify({
-          queries_4h_count: 0, queries_4h_start: null,
-          queries_weekly_count: 0, queries_weekly_start: null,
-        }),
+        body: JSON.stringify({ queries_4h_count: 0, queries_4h_start: null, queries_weekly_count: 0, queries_weekly_start: null }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       toast('✅ Liczniki zresetowane');
@@ -592,16 +623,12 @@
   }
 
   async function deleteLicense(key) {
-    if (!confirm(`Trwale usunąć licencję ${key}?\n\nSpowoduje to usunięcie licencji i wszystkich przypisanych urządzeń. Tej operacji nie można cofnąć.`)) return;
+    if (!confirm(`Trwale usunąć licencję?\n${key}\n\nTej operacji nie można cofnąć.`)) return;
     try {
-      await fetch(`${SUPABASE_URL}/rest/v1/devices?license_key=eq.${encodeURIComponent(key)}`, {
-        method: 'DELETE', headers: headers(),
-      });
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/licenses?license_key=eq.${encodeURIComponent(key)}`, {
-        method: 'DELETE', headers: headers(),
-      });
+      await fetch(`${SUPABASE_URL}/rest/v1/devices?license_key=eq.${encodeURIComponent(key)}`, { method: 'DELETE', headers: headers() });
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/licenses?license_key=eq.${encodeURIComponent(key)}`, { method: 'DELETE', headers: headers() });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      toast('🗑 Licencja usunięta');
+      toast('🗑 Usunięto');
       allLicenses = allLicenses.filter(x => x.license_key !== key);
       delete deviceCounts[key];
       renderTable();
@@ -609,11 +636,9 @@
   }
 
   async function deleteDevices(key) {
-    if (!confirm(`Usunąć wszystkie urządzenia przypisane do tej licencji?\n\nUżytkownik będzie musiał aktywować licencję ponownie.`)) return;
+    if (!confirm('Usunąć wszystkie urządzenia tej licencji?')) return;
     try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/devices?license_key=eq.${encodeURIComponent(key)}`, {
-        method: 'DELETE', headers: headers(),
-      });
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/devices?license_key=eq.${encodeURIComponent(key)}`, { method: 'DELETE', headers: headers() });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       toast('✅ Urządzenia usunięte');
       deviceCounts[key] = 0;
@@ -625,7 +650,7 @@
 
   function copyToClipboard(text, showToastMsg = true) {
     navigator.clipboard.writeText(text).then(() => {
-      if (showToastMsg) toast('Skopiowano: ' + text);
+      if (showToastMsg) toast('Skopiowano!');
     });
   }
 
